@@ -1,0 +1,19 @@
+{{- range $k, $v := .Values.applications }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ $v.name }}
+  name: {{ $v.name }}
+  namespace: calculator
+spec:
+  ports:
+    - nodePort: {{ $v.nodePort }}
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: {{ $v.name }}
+  type: LoadBalancer
+---
+{{- end }}

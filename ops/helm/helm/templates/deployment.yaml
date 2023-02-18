@@ -1,0 +1,31 @@
+{{- range $k, $v := .Values.applications }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ $v.name }}
+  name: {{ $v.name }}
+  namespace: calculator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $v.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $v.name }}
+    spec:
+      containers:
+        - image: {{ $v.image }}
+          imagePullPolicy: IfNotPresent
+          name: {{ $v.name }}
+          resources: 
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+---
+{{- end }}

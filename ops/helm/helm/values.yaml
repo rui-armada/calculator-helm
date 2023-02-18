@@ -1,0 +1,22 @@
+applications:
+  - image: calculator
+    name: calculator
+    nodePort: 30010
+  - image: addition
+    name: addition
+    nodePort: 30020
+  - image: division
+    name: division
+    nodePort: 30030
+  - image: multiplication
+    name: multiplication
+    nodePort: 30040
+  - image: subtraction
+    name: subtraction
+    nodePort: 30050
+  - image: remainder
+    name: remainder
+    nodePort: 30060
+  - image: client
+    name: client
+    nodePort: 30070

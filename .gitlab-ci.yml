@@ -1,0 +1,55 @@
+variables:
+  NODE_ENV: development
+  AGENT_ID: 45378
+  K8S_PROXY_URL: https://fe17-94-61-45-46.eu.ngrok.io
+
+stages:
+  - test
+  - plan
+  - apply
+  - deploy
+
+test:
+  image: node:latest
+  stage: test
+  script:
+    - npm install
+    - npm test
+
+plan:
+  image:
+    name: hashicorp/terraform:light
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  stage: plan
+  script:
+    - cd ops/terraform
+    - terraform init
+    - terraform plan -out "planfile"
+  artifacts:
+    paths:
+      - planfile
+      
+apply:
+  image: hashicorp/terraform:light
+  stage: apply
+  script:
+    - terraform apply -input=false "planfile"
+  dependencies:
+    - plan
+  when: manual
+
+deploy:
+  image: 
+    name: dtzar/helm-kubectl
+    entrypoint: [""]
+  stage: deploy
+  before_script:
+    - kubectl config set-credentials agent:$AGENT_ID --token="ci:${AGENT_ID}:${CI_JOB_TOKEN}"
+    - kubectl config set-cluster gitlab --server="${K8S_PROXY_URL}"
+    - kubectl config set-context "$KUBE_CONTEXT" --cluster=gitlab --user="agent:${AGENT_ID}"
+    - kubectl config use-context "$KUBE_CONTEXT"
+  script:
+    - helm upgrade calculator ./ops/helm/helm
+  when: manual

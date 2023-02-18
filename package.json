@@ -1,0 +1,14 @@
+{
+  "name": "devops",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "mocha ./services/*/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/ki-group-pt/xgeekshq/assignments/devops-assignment-ruifilipearmada.git"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0"
+  }
+}
